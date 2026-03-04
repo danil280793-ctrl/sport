@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Подключение PWA манифеста -->
+    <link rel="manifest" href="manifest.json">
   <title>Тренировка для ребенка</title>
   <!-- Мета-теги для установки на экран телефона (PWA) -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -877,5 +879,13 @@
     loadState();
     render();
   </script>
+      <!-- Регистрация Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('Service Worker зарегистрирован'))
+          .catch(err => console.log('Ошибка регистрации SW', err));
+      }
+    </script>
 </body>
 </html>
