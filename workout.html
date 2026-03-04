@@ -1,82 +1,509 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Физическая Тренировка</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Физическая Тренировка</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #2563eb; /* Синий цвет для тренировок */
+      --primary-light: #60a5fa;
+      --success: #10b981;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --border: #334155;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* ========== НАВИГАЦИЯ ========== */
+    .top-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      background: var(--card);
+      padding: 12px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 10px;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .top-nav a:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .top-nav a.active {
+      background: linear-gradient(135deg, var(--primary), #0ea5e9); /* Синий градиент */
+      color: white;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary), #0ea5e9);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 40px rgba(37, 99, 235, 0.3);
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--primary), #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* Progress */
+    .progress-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #0ea5e9);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Day Header */
+    .day-header {
+      background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .day-header {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(14, 165, 233, 0.2));
+      }
+    }
+
+    .day-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .day-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .day-progress {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .day-progress .progress-bar {
+      flex: 1;
+      height: 6px;
+    }
+
+    .day-progress span {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* Exercise Card */
+    .exercise {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+    }
+
+    .exercise.completed {
+      border: 2px solid var(--success);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.02));
+    }
+
+    .exercise-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .exercise-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      margin-top: 12px; /* Выравнивание по иконке */
+    }
+
+    .exercise-checkbox.checked {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+
+    .exercise-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(14, 165, 233, 0.1));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .exercise-info {
+      flex: 1;
+    }
+
+    .exercise-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .exercise.completed .exercise-title {
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    .exercise-duration {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--border);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .exercise-short-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Buttons */
+    .reset-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+
+    .reset-btn:hover {
+      background: var(--border);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .exercise-header {
+        flex-wrap: wrap;
+      }
+
+      .exercise-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+      
+      .top-nav a {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
 </head>
 <body>
-
-    <!-- МЕНЮ НАВИГАЦИИ -->
-    <nav>
-        <a href="index.html">🏠 Главная</a>
-        <a href="workout.html" class="active">🏋️ Тренировка</a>
-        <a href="neurogymnastics.html">🧠 Нейрогимнастика</a>
+  <div class="container">
+    
+    <!-- НАВИГАЦИЯ -->
+    <nav class="top-nav">
+      <a href="index.html">🏠 Главная</a>
+      <a href="workout.html" class="active">🏋️ Тренировка</a>
+      <a href="neurogymnastics.html">🧠 Нейрогимнастика</a>
     </nav>
 
-    <div class="container">
-        <h2>🏋️ Комплекс на сегодня</h2>
-        <p style="text-align: center; color: #666;" id="date-display"></p>
-        <div id="workout-list"></div>
-        <button class="btn btn-danger" onclick="resetWorkout()">Сбросить прогресс</button>
-    </div>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-icon">🏋️</div>
+      <h1>Физическая Тренировка</h1>
+      <p>Ежедневный комплекс упражнений для тела</p>
+    </header>
 
-    <script>
-        // Настройки упражнений
-        const exercises = [
-            { name: "Приседания", sets: 3, reps: 15 },
-            { name: "Отжимания", sets: 3, reps: 12 },
-            { name: "Планка", sets: 3, reps: "40 сек" },
-            { name: "Выпады", sets: 3, reps: "10 на ногу" },
-            { name: "Скручивания", sets: 4, reps: 20 }
-        ];
+    <!-- Day Content -->
+    <div id="dayContent"></div>
 
-        // Показать дату
-        const options = { weekday: 'long', month: 'long', day: 'numeric' };
-        document.getElementById('date-display').innerText = new Date().toLocaleDateString("ru-RU", options);
+    <!-- Footer -->
+    <footer class="footer">
+      <p>💪 Занимайтесь регулярно для лучших результатов</p>
+      <p style="margin-top: 8px; font-size: 0.75rem;">Прогресс сохраняется автоматически</p>
+    </footer>
+  </div>
 
-        const listContainer = document.getElementById('workout-list');
+  <script>
+    // ============ DATA ============
+    const exercises = [
+      { 
+        id: 'w1', 
+        name: "Приседания", 
+        sets: 3, 
+        reps: 15, 
+        emoji: '🦵', 
+        desc: 'Держи спину прямо, пятки на полу. Отлично тренирует ноги и ягодицы.' 
+      },
+      { 
+        id: 'w2', 
+        name: "Отжимания", 
+        sets: 3, 
+        reps: 12, 
+        emoji: '💪', 
+        desc: 'Корпус прямой, опускайся почти до касания грудью пола. Укрепляет грудь и руки.' 
+      },
+      { 
+        id: 'w3', 
+        name: "Планка", 
+        sets: 3, 
+        reps: "40 сек", 
+        emoji: '🧱', 
+        desc: 'Держи тело ровной линией, напряги пресс и ягодицы. Укрепляет кор.' 
+      },
+      { 
+        id: 'w4', 
+        name: "Выпады", 
+        sets: 3, 
+        reps: "10 на ногу", 
+        emoji: '🚶', 
+        desc: 'Шаг вперёд, колено под углом 90 градусов. Развивает баланс и ноги.' 
+      },
+      { 
+        id: 'w5', 
+        name: "Скручивания", 
+        sets: 4, 
+        reps: 20, 
+        emoji: '↩️', 
+        desc: 'Поднимай лопатки от пола за счёт мышц пресса, поясница прижата.' 
+      },
+      { 
+        id: 'w6', 
+        name: "Растяжка", 
+        sets: 1, 
+        reps: "5 мин", 
+        emoji: '🤸', 
+        desc: 'Плавные наклоны и вытяжения. Расслабляет мышцы после нагрузки.' 
+      }
+    ];
 
-        // Рендер упражнений
-        exercises.forEach((ex, index) => {
-            const key = `workout-${index}`; // Уникальный ключ для сохранения
-            const isDone = localStorage.getItem(key) === new Date().toDateString();
-            
-            const card = document.createElement('div');
-            card.className = 'card';
-            if(isDone) card.style.borderLeft = "5px solid #28a745";
+    // ============ STATE ============
+    let completed = loadProgress();
 
-            card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <strong>${ex.name}</strong>
-                        <div style="font-size: 0.9em; color: #666;">Подходы: ${ex.sets} | ${ex.reps}</div>
-                    </div>
-                    <button class="btn ${isDone ? 'btn-success' : ''}" onclick="markDone(${index}, this)" style="width: auto; padding: 8px 15px;">
-                        ${isDone ? '✅' : 'Выполнить'}
-                    </button>
-                </div>
-            `;
-            listContainer.appendChild(card);
-        });
+    // ============ UTILS ============
+    function loadProgress() {
+      try {
+        const saved = localStorage.getItem('workoutProgress');
+        return saved ? JSON.parse(saved) : {};
+      } catch (e) {
+        return {};
+      }
+    }
 
-        function markDone(index, btn) {
-            const key = `workout-${index}`;
-            localStorage.setItem(key, new Date().toDateString());
-            btn.innerText = '✅';
-            btn.classList.add('btn-success');
-            btn.parentElement.parentElement.style.borderLeft = "5px solid #28a745";
-        }
+    function saveProgress() {
+      localStorage.setItem('workoutProgress', JSON.stringify(completed));
+    }
 
-        function resetWorkout() {
-            if(confirm('Сбросить весь прогресс за сегодня?')) {
-                exercises.forEach((_, index) => {
-                    localStorage.removeItem(`workout-${index}`);
-                });
-                location.reload();
-            }
-        }
-    </script>
+    function getTotalSets() {
+      return exercises.reduce((sum, ex) => sum + ex.sets, 0);
+    }
+
+    function getCompletedSets() {
+      let count = 0;
+      exercises.forEach(ex => {
+        if (completed[ex.id]) count += ex.sets;
+      });
+      return count;
+    }
+
+    // ============ RENDER ============
+    function renderDay() {
+      const totalSets = getTotalSets();
+      const completedSets = getCompletedSets();
+      const progressPercent = totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
+
+      const content = document.getElementById('dayContent');
+      content.innerHTML = `
+        <div class="day-header">
+          <h2 class="day-title">📋 Комплекс на сегодня</h2>
+          <p class="day-desc">Выполняй упражнения последовательно, отдыхая между подходами.</p>
+          <div class="day-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progressPercent}%"></div>
+            </div>
+            <span>${completedSets} / ${totalSets} подходов</span>
+          </div>
+          <button class="reset-btn" onclick="resetDay()">
+            🔄 Сбросить прогресс
+          </button>
+        </div>
+        ${exercises.map(ex => renderExercise(ex)).join('')}
+      `;
+    }
+
+    function renderExercise(ex) {
+      const isCompleted = completed[ex.id] || false;
+
+      return `
+        <div class="exercise ${isCompleted ? 'completed' : ''}" data-exercise="${ex.id}">
+          <div class="exercise-header">
+            <div class="exercise-checkbox ${isCompleted ? 'checked' : ''}" onclick="toggleExercise('${ex.id}')">
+              ${isCompleted ? '✓' : ''}
+            </div>
+            <div class="exercise-icon">${ex.emoji}</div>
+            <div class="exercise-info">
+              <div class="exercise-title">${ex.name}</div>
+              <div class="exercise-duration">🔥 ${ex.sets} подхода × ${ex.reps}</div>
+              <div class="exercise-short-desc">${ex.desc}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      renderDay();
+    }
+
+    // ============ ACTIONS ============
+    function toggleExercise(exId) {
+      completed[exId] = !completed[exId];
+      saveProgress();
+      render();
+    }
+
+    function resetDay() {
+      if (confirm('Сбросить весь прогресс за сегодня?')) {
+        completed = {};
+        saveProgress();
+        render();
+      }
+    }
+
+    // ============ INIT ============
+    render();
+  </script>
 </body>
 </html>
