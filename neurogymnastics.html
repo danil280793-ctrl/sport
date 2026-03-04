@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Нейрогимнастика - Упражнения для мозга</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #a78bfa;
+      --success: #10b981;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --border: #334155;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 40px rgba(124, 58, 237, 0.3);
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* Progress */
+    .progress-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #ec4899);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Day Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--card);
+      padding: 6px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      overflow-x: auto;
+    }
+
+    .tab {
+      flex: 1;
+      min-width: 40px;
+      padding: 10px 8px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      color: white;
+    }
+
+    .tab.completed::after {
+      content: '✓';
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      font-size: 10px;
+      color: var(--success);
+    }
+
+    .tab.active.completed::after {
+      color: white;
+    }
+
+    /* Day Header */
+    .day-header {
+      background: linear-gradient(135deg, #ede9fe, #fce7f3);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .day-header {
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(236, 72, 153, 0.2));
+      }
+    }
+
+    .day-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .day-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .day-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .day-progress {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .day-progress .progress-bar {
+      flex: 1;
+      height: 6px;
+    }
+
+    .day-progress span {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* Exercise Card */
+    .exercise {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+    }
+
+    .exercise.completed {
+      border: 2px solid var(--success);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.02));
+    }
+
+    .exercise-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .exercise-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .exercise-checkbox.checked {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+
+    .exercise-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(236, 72, 153, 0.1));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .exercise-info {
+      flex: 1;
+    }
+
+    .exercise-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .exercise.completed .exercise-title {
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    .exercise-duration {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--border);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .exercise-short-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Timer */
+    .timer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .timer-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .timer-btn.primary {
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      color: white;
+    }
+
+    .timer-btn.secondary {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .timer-display {
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .timer-display.finished {
+      color: var(--success);
+    }
+
+    .timer-progress {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .timer-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #ec4899);
+      transition: width 0.1s linear;
+    }
+
+    /* Details Toggle */
+    .details-toggle {
+      margin-top: 12px;
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+    }
+
+    .details-toggle:hover {
+      text-decoration: underline;
+    }
+
+    .details {
+      margin-top: 16px;
+      display: none;
+    }
+
+    .details.open {
+      display: block;
+    }
+
+    .steps {
+      background: rgba(124, 58, 237, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .steps h4 {
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-text {
+      font-size: 0.9rem;
+    }
+
+    .step-tip {
+      font-size: 0.8rem;
+      color: var(--primary);
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    .benefits {
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .benefits h4 {
+      font-size: 0.9rem;
+      color: var(--success);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .benefits ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .benefits li {
+      font-size: 0.8rem;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Reset Button */
+    .reset-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .reset-btn:hover {
+      background: var(--border);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+
+      .exercise-header {
+        flex-wrap: wrap;
+      }
+
+      .exercise-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+
+      .tabs {
+        gap: 2px;
+      }
+
+      .tab {
+        padding: 8px 4px;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-icon">🧠</div>
+      <h1>Нейрогимнастика</h1>
+      <p>Ежедневные упражнения для активации мозга и развития когнитивных способностей</p>
+    </header>
+
+    <!-- Week Progress -->
+    <div class="progress-card">
+      <div class="progress-header">
+        <span>Прогресс за неделю</span>
+        <span id="weekProgressText">0 / 21 упражнений</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="weekProgressBar" style="width: 0%"></div>
+      </div>
+      <div class="progress-text" id="weekPercent">0% выполнено</div>
+    </div>
+
+    <!-- Day Tabs -->
+    <div class="tabs" id="dayTabs"></div>
+
+    <!-- Day Content -->
+    <div id="dayContent"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>✨ Занимайтесь регулярно для лучших результатов ✨</p>
+      <p style="margin-top: 8px; font-size: 0.75rem;">Прогресс сохраняется автоматически в браузере</p>
+    </footer>
+  </div>
+
+  <script>
+    // ============ DATA ============
+    const weeklyData = [
+      {
+        id: 'monday',
+        name: 'Понедельник',
+        shortName: 'Пн',
+        title: '🧠 Активация мозга',
+        description: 'Упражнения для пробуждения и активизации мозговой деятельности',
+        color: '#10b981',
+        exercises: [
+          {
+            id: 'm1',
+            name: 'Перекрёстные шаги',
+            shortDesc: 'Касание противоположным локтем колена — активирует оба полушария мозга',
+            duration: 120,
+            emoji: '🚶',
+            steps: [
+              { text: 'Встань прямо, ноги на ширине плеч, руки опущены вдоль тела.', tip: 'Можно делать сидя, если так удобнее' },
+              { text: 'Подними правое колено вверх и одновременно коснись его левым локтем.', tip: 'Следи, чтобы локоть касался именно колена, а не бедра' },
+              { text: 'Вернись в исходное положение.' },
+              { text: 'Теперь подними левое колено и коснись его правым локтем.' },
+              { text: 'Продолжай чередовать в ритмичном темпе, как при ходьбе на месте.' }
+            ],
+            benefits: ['Улучшает координацию', 'Активирует оба полушария', 'Повышает концентрацию']
+          },
+          {
+            id: 'm2',
+            name: 'Ушно-носовой тест',
+            shortDesc: 'Координация рук — правая к носу, левая к уху, и наоборот',
+            duration: 60,
+            emoji: '👃',
+            steps: [
+              { text: 'Встань или сядь прямо перед зеркалом (по желанию).' },
+              { text: 'Положи правую руку на нос, а левую — на правое ухо.', tip: 'Пальцами касайся носа и мочки уха' },
+              { text: 'По команде «раз» быстро поменяй руки: левая касается носа, правая — левого уха.' },
+              { text: 'По команде «два» снова поменяй руки.' },
+              { text: 'Повторяй смену положений 10-15 раз, стараясь делать всё быстрее и точнее.', tip: 'Не расстраивайся, если сначала не получается — это нормально!' }
+            ],
+            benefits: ['Развивает межполушарные связи', 'Тренирует быстроту реакции', 'Улучшает внимание']
+          },
+          {
+            id: 'm3',
+            name: 'Зеркальное рисование',
+            shortDesc: 'Рисование двумя руками одновременно — развивает оба полушария',
+            duration: 180,
+            emoji: '✏️',
+            steps: [
+              { text: 'Возьми в каждую руку по карандашу или фломастеру.', tip: 'Можно просто водить пальцем по столу или в воздухе' },
+              { text: 'Положи перед собой лист бумаги или представь его в воздухе.' },
+              { text: 'Начни рисовать одновременно обеими руками одинаковые фигуры: круги, квадраты, треугольники.', tip: 'Сначала рисуй в одном направлении, потом попробуй в противоположных' },
+              { text: 'Старайся, чтобы фигуры были одинакового размера и симметричными.' },
+              { text: 'Переходи к более сложным фигурам: звёзды, сердечки, буквы.' }
+            ],
+            benefits: ['Синхронизирует работу полушарий', 'Развивает творческое мышление', 'Улучшает мелкую моторику']
+          }
+        ]
+      },
+      {
+        id: 'tuesday',
+        name: 'Вторник',
+        shortName: 'Вт',
+        title: '⚖️ Координация и баланс',
+        description: 'Улучшение равновесия и координации движений',
+        color: '#0ea5e9',
+        exercises: [
+          {
+            id: 't1',
+            name: 'Стойка на одной ноге',
+            shortDesc: 'Стояние на одной ноге с закрытыми глазами — тренирует вестибулярный аппарат',
+            duration: 60,
+            emoji: '🦶',
+            steps: [
+              { text: 'Встань прямо, ноги вместе, руки на поясе.' },
+              { text: 'Подними одну ногу, согнув её в колене (ступня касается колена опорной ноги).', tip: 'Выбери удобную высоту — главное устойчиво стоять' },
+              { text: 'Найди точку равновесия и удерживай позицию 5-10 секунд.' },
+              { text: 'Теперь закрой глаза и попробуй простоять так 30 секунд.', tip: 'Если сложно — можно чуть приоткрыть глаза' },
+              { text: 'Поменяй ногу и повтори упражнение.' }
+            ],
+            benefits: ['Улучшает равновесие', 'Тренирует вестибулярный аппарат', 'Укрепляет мышцы ног']
+          },
+          {
+            id: 't2',
+            name: 'Пальцевая гимнастика',
+            shortDesc: 'Касание большим пальцем каждого пальца по очереди',
+            duration: 120,
+            emoji: '✋',
+            steps: [
+              { text: 'Вытяни правую руку вперёд, ладонь раскрыта, пальцы вместе.' },
+              { text: 'Начни касаться большим пальцем подушечек других пальцев по порядку:', tip: 'Делай движения плавно и точно' },
+              { text: 'Указательный → Средний → Безымянный → Мизинец', tip: 'На мизинец нажимай аккуратно' },
+              { text: 'Теперь в обратном порядке: Мизинец → Безымянный → Средний → Указательный' },
+              { text: 'Повтори то же самое левой рукой.', tip: 'Можно делать двумя руками одновременно!' }
+            ],
+            benefits: ['Развивает мелкую моторику', 'Улучшает связь «рука-мозг»', 'Готовит руку к письму']
+          },
+          {
+            id: 't3',
+            name: 'Вращение головой',
+            shortDesc: 'Плавные круговые движения головой — расслабляет шею и плечи',
+            duration: 60,
+            emoji: '🔄',
+            steps: [
+              { text: 'Встань или сядь прямо, плечи расслаблены и опущены.' },
+              { text: 'Медленно опусти подбородок к груди.', tip: 'Движения должны быть очень плавными, без рывков' },
+              { text: 'Продолжай движение: наклони голову к правому плечу (не поднимай плечо!).' },
+              { text: 'Запрокинь голову назад (смотри вверх), затем наклони к левому плечу.' },
+              { text: 'Заверши круг, вернувшись к груди. Сделай 3-5 кругов в каждую сторону.', tip: 'Если чувствуешь головокружение — делай медленнее или прекрати' }
+            ],
+            benefits: ['Расслабляет мышцы шеи', 'Улучшает кровоснабжение мозга', 'Снимает напряжение']
+          }
+        ]
+      },
+      {
+        id: 'wednesday',
+        name: 'Среда',
+        shortName: 'Ср',
+        title: '👆 Мелкая моторика',
+        description: 'Развитие точности движений и ловкости пальцев',
+        color: '#8b5cf6',
+        exercises: [
+          {
+            id: 'w1',
+            name: 'Пальчиковые щелчки',
+            shortDesc: 'Щелчки каждым пальцем по очереди — развивает силу и ловкость пальцев',
+            duration: 120,
+            emoji: '👌',
+            steps: [
+              { text: 'Соедини подушечки большого и указательного пальцев.' },
+              { text: 'Создай напряжение между пальцами, затем резко выпрями указательный палец — получится щелчок!', tip: 'Цель — сделать звонкий, чёткий щелчок' },
+              { text: 'Повтори со средним, безымянным пальцем и мизинцем.', tip: 'С мизинцем сложнее всего — не сдавайся!' },
+              { text: 'Пройдись по всем пальцам 3-5 раз каждой рукой.' },
+              { text: 'Попробуй делать щелчки двумя руками одновременно.' }
+            ],
+            benefits: ['Укрепляет мышцы пальцев', 'Развивает координацию', 'Улучшает ловкость рук']
+          },
+          {
+            id: 'w2',
+            name: 'Замок из пальцев',
+            shortDesc: 'Сцепление пальцев и вращение — разминка для кистей',
+            duration: 60,
+            emoji: '🔐',
+            steps: [
+              { text: 'Сцепи пальцы обеих рук в «замок»: пальцы переплетены между собой.' },
+              { text: 'Поверни ладони от себя, выпрямляя руки перед грудью.', tip: 'Почувствуй приятное растяжение' },
+              { text: 'Начни вращать сцепленными кистями по кругу: сначала по часовой стрелке.' },
+              { text: 'Сделай 10-15 вращений, затем поменяй направление.', tip: 'Движения плавные, без резких рывков' },
+              { text: 'Растопырь пальцы в замке, затем снова сожми — повтори 5-10 раз.' }
+            ],
+            benefits: ['Разминает суставы кистей', 'Снимает усталость рук', 'Улучшает гибкость']
+          },
+          {
+            id: 'w3',
+            name: 'Лезгинка',
+            shortDesc: 'Перекладывание пальцев рук друг на друга — упражнение на координацию',
+            duration: 120,
+            emoji: '💃',
+            steps: [
+              { text: 'Положи руки на стол ладонями вниз, пальцы выпрямлены.' },
+              { text: 'Подними большой палец левой руки.' },
+              { text: 'Подними указательный палец правой руки, одновременно опуская большой палец левой.', tip: 'Движения должны быть плавными и ритмичными' },
+              { text: 'Продолжай чередовать: поднимаешь палец одной руки — опускаешь палец другой.' },
+              { text: 'Добейся плавного «бегущего» движения пальцев обеих рук.', tip: 'Это сложно! Не отчаивайся, если сначала не получается' }
+            ],
+            benefits: ['Тренирует независимость движений', 'Развивает концентрацию', 'Улучшает координацию']
+          }
+        ]
+      },
+      {
+        id: 'thursday',
+        name: 'Четверг',
+        shortName: 'Чт',
+        title: '🌬️ Дыхание и релаксация',
+        description: 'Техники правильного дыхания и расслабления',
+        color: '#06b6d4',
+        exercises: [
+          {
+            id: 'th1',
+            name: 'Квадратное дыхание',
+            shortDesc: 'Дыхание по квадрату: вдох-пауза-выдох-пауза по 4 секунды',
+            duration: 180,
+            emoji: '💨',
+            steps: [
+              { text: 'Представь перед собой квадрат. Каждая сторона — это 4 секунды.' },
+              { text: '1-я сторона (вверх): Медленно вдыхай через нос, считая до 4.', tip: 'Живот при вдохе надувается как шарик' },
+              { text: '2-я сторона (вправо): Задержи дыхание на 4 секунды.', tip: 'Будь расслаблен, не напрягайся' },
+              { text: '3-я сторона (вниз): Медленно выдыхай через рот, считая до 4.', tip: 'Живот сдувается, становится плоским' },
+              { text: '4-я сторона (влево): Оставайся без дыхания на 4 секунды.', tip: 'Это «пустой» квадрат — лёгкие пустые' },
+              { text: 'Повтори цикл 5-10 раз.' }
+            ],
+            benefits: ['Успокаивает нервную систему', 'Снижает стресс', 'Улучшает концентрацию']
+          },
+          {
+            id: 'th2',
+            name: 'Диафрагмальное дыхание',
+            shortDesc: 'Глубокое дыхание животом — правильное дыхание для расслабления',
+            duration: 180,
+            emoji: '🫁',
+            steps: [
+              { text: 'Ляг на спину или сядь удобно, положив одну руку на грудь, другую на живот.' },
+              { text: 'Медленно вдыхай через нос, направляя воздух в живот.', tip: 'Рука на животе должна подниматься, на груди — оставаться неподвижной' },
+              { text: 'Когда живот надуется как воздушный шарик, задержи дыхание на 2-3 секунды.' },
+              { text: 'Медленно выдыхай через рот, чувствуя, как живот сдувается.', tip: 'Представь, что выдыхаешь все тревоги' },
+              { text: 'Повтори 10-15 раз, стараясь дышать только животом.' }
+            ],
+            benefits: ['Наполняет кровь кислородом', 'Расслабляет тело', 'Снимает тревожность']
+          },
+          {
+            id: 'th3',
+            name: 'Расслабление плеч',
+            shortDesc: 'Напряжение и расслабление плеч — снимает зажимы',
+            duration: 60,
+            emoji: '🤷',
+            steps: [
+              { text: 'Встань или сядь прямо, руки свободно висят вдоль тела.' },
+              { text: 'На вдохе медленно подними плечи к ушам как можно выше.', tip: 'Напряги мышцы плеч и шеи максимально сильно' },
+              { text: 'Задержись в этом положении на 3-5 секунд, чувствуя напряжение.' },
+              { text: 'На выдохе резко «сбрось» плечи вниз, полностью расслабив мышцы.', tip: 'Почувствуй, как уходит напряжение' },
+              { text: 'Повтори 5-10 раз, каждый раз расслабляясь всё глубже.' }
+            ],
+            benefits: ['Снимает напряжение с плеч', 'Улучшает осанку', 'Расслабляет верхнюю часть тела']
+          }
+        ]
+      },
+      {
+        id: 'friday',
+        name: 'Пятница',
+        shortName: 'Пт',
+        title: '🎯 Внимание и память',
+        description: 'Тренировка концентрации и когнитивных функций',
+        color: '#f59e0b',
+        exercises: [
+          {
+            id: 'f1',
+            name: 'Таблица Шульте',
+            shortDesc: 'Поиск чисел от 1 до 25 в случайной таблице — тренировка внимания',
+            duration: 120,
+            emoji: '🔢',
+            steps: [
+              { text: 'Представь таблицу 5×5 клеток, где в случайном порядке расположены числа от 1 до 25.' },
+              { text: 'Задача: найти и назвать числа по порядку от 1 до 25 как можно быстрее.', tip: 'Можно нарисовать такую таблицу на бумаге или найти в интернете' },
+              { text: 'Старайся двигать только глазами, не поворачивая голову.' },
+              { text: 'Глаза должны «сканировать» таблицу, не задерживаясь на одной точке.', tip: 'Периферическое зрение — твой помощник!' },
+              { text: 'Когда закончишь — попробуй улучшить свой результат.' }
+            ],
+            benefits: ['Развивает скорость восприятия', 'Тренирует периферическое зрение', 'Улучшает концентрацию']
+          },
+          {
+            id: 'f2',
+            name: 'Двойные изображения',
+            shortDesc: 'Рассматривание картинок с двумя смыслами — тренировка гибкости мышления',
+            duration: 120,
+            emoji: '🖼️',
+            steps: [
+              { text: 'Найди картинку с двойным изображением (например, «молодая девушка / старуха»).', tip: 'Такие картинки легко найти в интернете по запросу «оптические иллюзии»' },
+              { text: 'Рассмотри картинку и найди первое изображение.' },
+              { text: 'Теперь попробуй увидеть второе изображение.', tip: 'Это может потребовать времени — не сдавайся!' },
+              { text: 'Когда увидишь оба — потренируйся переключаться между ними.' },
+              { text: 'Попробуй другие двойные изображения: ваза/два лица, лягушка/лошадь и т.д.' }
+            ],
+            benefits: ['Развивает гибкость мышления', 'Тренирует внимание к деталям', 'Учит видеть по-разному']
+          },
+          {
+            id: 'f3',
+            name: 'Счёт в обратном порядке',
+            shortDesc: 'Вычитание 7 из 100 — тренировка рабочей памяти',
+            duration: 120,
+            emoji: '🧮',
+            steps: [
+              { text: 'Начни считать от 100 и вычитай по 7 каждый раз.' },
+              { text: '100 минус 7 равно... 93!', tip: 'Старайся не использовать пальцы или бумагу' },
+              { text: '93 минус 7 равно... 86!' },
+              { text: 'Продолжай: 79, 72, 65, 58... и так далее до нуля или пока не ошибёшься.', tip: 'Если сбился — начни сначала' },
+              { text: 'Постарайся дойти до конца без ошибок!', tip: 'Для усложнения можно вычитать 13 или 17' }
+            ],
+            benefits: ['Тренирует рабочую память', 'Развивает вычислительные навыки', 'Улучшает концентрацию']
+          }
+        ]
+      },
+      {
+        id: 'saturday',
+        name: 'Суббота',
+        shortName: 'Сб',
+        title: '👁️ Глазодвигательная гимнастика',
+        description: 'Упражнения для укрепления глазных мышц',
+        color: '#14b8a6',
+        exercises: [
+          {
+            id: 's1',
+            name: 'Восьмёрки глазами',
+            shortDesc: 'Рисование цифры 8 глазами — расслабление и тренировка глазных мышц',
+            duration: 60,
+            emoji: '👁️',
+            steps: [
+              { text: 'Сядь удобно, голова неподвижна, смотри перед собой.' },
+              { text: 'Представь перед собой большую цифру 8, лежащую на боку (знак бесконечности ∞).' },
+              { text: 'Медленно «нарисуй» эту восьмёрку глазами: по часовой стрелке.', tip: 'Движения плавные, голова не двигается — только глаза!' },
+              { text: 'Сделай 5-8 «рисунков» в одну сторону.' },
+              { text: 'Теперь рисуй восьмёрку в другую сторону.', tip: 'Упражнение можно делать с открытыми или закрытыми глазами' }
+            ],
+            benefits: ['Снимает напряжение глаз', 'Укрепляет глазные мышцы', 'Улучшает координацию глаз']
+          },
+          {
+            id: 's2',
+            name: 'Фокусировка',
+            shortDesc: 'Переключение взгляда с близкого на далёкий объект — тренировка аккомодации',
+            duration: 120,
+            emoji: '👆',
+            steps: [
+              { text: 'Вытяни руку вперёд и подними указательный палец вертикально.' },
+              { text: 'Смотри на палец и чётко его видишь — это «близкий фокус».', tip: 'Держи голову прямо, не наклоняйся' },
+              { text: 'Теперь переведи взгляд на удалённый предмет за окном (дерево, дом).', tip: 'Это «дальний фокус» — палец станет размытым' },
+              { text: 'Чередуй: 3 секунды на палец — 3 секунды на далёкий предмет.', tip: 'Почувствуй, как глазные мышцы меняют фокус' },
+              { text: 'Сделай 10-15 переключений.' }
+            ],
+            benefits: ['Тренирует аккомодацию глаз', 'Снимает усталость от экрана', 'Профилактика близорукости']
+          },
+          {
+            id: 's3',
+            name: 'Массаж глаз',
+            shortDesc: 'Лёгкий массаж закрытых глаз — отдых и расслабление',
+            duration: 60,
+            emoji: '✨',
+            steps: [
+              { text: 'Сядь удобно и закрой глаза.' },
+              { text: 'Разогрей ладони, быстро потирая их друг о друга.', tip: 'Ладони должны стать тёплыми' },
+              { text: 'Приложи тёплые ладони к закрытым глазам (не дави!).', tip: 'Это называется «пальминг» — почувствуй тепло и темноту' },
+              { text: 'Посиди так 30-60 секунд, расслабившись.' },
+              { text: 'Кончиками пальцев сделай лёгкий массаж вокруг глаз:', tip: 'Движения очень нежные, без давления на глазное яблоко' },
+              { text: 'От внутреннего угла по верхнему веку к внешнему, затем по нижнему веку обратно.' }
+            ],
+            benefits: ['Расслабляет глазные мышцы', 'Улучшает кровообращение', 'Даёт отдых уставшим глазам']
+          }
+        ]
+      },
+      {
+        id: 'sunday',
+        name: 'Воскресенье',
+        shortName: 'Вс',
+        title: '🌟 Комплексный день',
+        description: 'Объединение всех практик и медитация',
+        color: '#ec4899',
+        exercises: [
+          {
+            id: 'su1',
+            name: 'Зарядка для ума',
+            shortDesc: 'Выбери 3-5 любимых упражнений за неделю и выполни каждое по 1 минуте',
+            duration: 180,
+            emoji: '🌟',
+            steps: [
+              { text: 'Вспомни упражнения, которые тебе понравились больше всего за эту неделю.', tip: 'Выбери те, что доставили удовольствие или были интересны' },
+              { text: 'Выбери 3-5 таких упражнений.' },
+              { text: 'Выполни каждое выбранное упражнение по 1 минуте.', tip: 'Не обязательно делать идеально — главное получать удовольствие!' },
+              { text: 'Объедини их в одну плавную последовательность.' },
+              { text: 'Наслаждайся движениями и чувством, как работает твой мозг!' }
+            ],
+            benefits: ['Закрепляет навыки недели', 'Даёт свободу выбора', 'Повышает мотивацию']
+          },
+          {
+            id: 'su2',
+            name: 'Медитация осознанности',
+            shortDesc: 'Спокойное сидение с фокусом на дыхании — отдых для ума',
+            duration: 300,
+            emoji: '🧘',
+            steps: [
+              { text: 'Сядь удобно: на стул со спинкой или на подушку на полу.' },
+              { text: 'Выпрями спину, руки положи на колени, закрой глаза.', tip: 'Поза должна быть удобной, но не слишком расслабленной' },
+              { text: 'Направь внимание на дыхание: ощущай, как воздух входит и выходит.', tip: 'Не пытайся контролировать дыхание — просто наблюдай' },
+              { text: 'Когда мысли уводят тебя — мягко возвращай внимание к дыханию.', tip: 'Это нормально — мысли будут приходить. Главное — возвращаться!' },
+              { text: 'Посиди так 3-5 минут (или дольше, если получается).' },
+              { text: 'Медленно открой глаза, потянись, сделай глубокий вдох.' }
+            ],
+            benefits: ['Успокаивает ум', 'Снижает стресс', 'Улучшает самоконтроль']
+          },
+          {
+            id: 'su3',
+            name: 'Благодарность',
+            shortDesc: 'Запиши или подумай о 3 вещах, за которые благодарен сегодня',
+            duration: 120,
+            emoji: '💝',
+            steps: [
+              { text: 'Подумай о прошедшем дне или неделе.' },
+              { text: 'Найди 3 вещи, за которые ты можешь сказать «спасибо» или «мне повезло».', tip: 'Это могут быть мелочи: вкусный завтрак, хорошая погода' },
+              { text: 'Можно записать их в блокнот или просто произнести про себя.' },
+              { text: 'Примеры: «Спасибо за то, что выспался», «Рад, что погулял в парке».', tip: 'Нет правильных или неправильных ответов' },
+              { text: 'Почувствуй искреннюю благодарность за эти моменты.' }
+            ],
+            benefits: ['Повышает настроение', 'Учит замечать хорошее', 'Развивает позитивное мышление']
+          }
+        ]
+      }
+    ];
+
+    // ============ STATE ============
+    let activeDay = getCurrentDay();
+    let completed = loadProgress();
+    let activeTimer = null;
+    let timerInterval = null;
+    let timerSeconds = 0;
+
+    // ============ UTILS ============
+    function getCurrentDay() {
+      const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      return days[new Date().getDay()];
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      if (mins > 0) {
+        return secs > 0 ? `${mins} мин ${secs} сек` : `${mins} мин`;
+      }
+      return `${secs} сек`;
+    }
+
+    function loadProgress() {
+      try {
+        const saved = localStorage.getItem('neuroGymProgress');
+        return saved ? JSON.parse(saved) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem('neuroGymProgress', JSON.stringify(completed));
+    }
+
+    // ============ RENDER ============
+    function renderTabs() {
+      const tabs = document.getElementById('dayTabs');
+      tabs.innerHTML = weeklyData.map(day => {
+        const dayCompleted = completed[day.id] ? Object.values(completed[day.id]).filter(Boolean).length : 0;
+        const isComplete = dayCompleted === day.exercises.length;
+        const isActive = day.id === activeDay;
+        
+        return `
+          <button class="tab ${isActive ? 'active' : ''} ${isComplete ? 'completed' : ''}" data-day="${day.id}">
+            ${day.shortName}
+          </button>
+        `;
+      }).join('');
+
+      tabs.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          activeDay = tab.dataset.day;
+          stopTimer();
+          renderTabs();
+          renderDay();
+        });
+      });
+    }
+
+    function renderDay() {
+      const day = weeklyData.find(d => d.id === activeDay);
+      if (!day) return;
+
+      const dayCompleted = completed[day.id] ? Object.values(completed[day.id]).filter(Boolean).length : 0;
+      const progressPercent = (dayCompleted / day.exercises.length) * 100;
+
+      const content = document.getElementById('dayContent');
+      content.innerHTML = `
+        <div class="day-header">
+          <div class="day-badge">${day.name}</div>
+          <h2 class="day-title">${day.title}</h2>
+          <p class="day-desc">${day.description}</p>
+          <div class="day-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progressPercent}%"></div>
+            </div>
+            <span>${dayCompleted} / ${day.exercises.length}</span>
+          </div>
+          <button class="reset-btn" onclick="resetDay()">
+            🔄 Сбросить день
+          </button>
+        </div>
+        ${day.exercises.map(ex => renderExercise(ex, day.id)).join('')}
+      `;
+
+      updateWeekProgress();
+    }
+
+    function renderExercise(ex, dayId) {
+      const isCompleted = completed[dayId]?.[ex.id] || false;
+      const isTimerRunning = activeTimer === ex.id;
+
+      return `
+        <div class="exercise ${isCompleted ? 'completed' : ''}" data-exercise="${ex.id}">
+          <div class="exercise-header">
+            <div class="exercise-checkbox ${isCompleted ? 'checked' : ''}" onclick="toggleExercise('${dayId}', '${ex.id}')">
+              ${isCompleted ? '✓' : ''}
+            </div>
+            <div class="exercise-icon">${ex.emoji}</div>
+            <div class="exercise-info">
+              <div class="exercise-title">${ex.name}</div>
+              <div class="exercise-duration">⏱️ ${formatTime(ex.duration)}</div>
+              <div class="exercise-short-desc">${ex.shortDesc}</div>
+              
+              <div class="timer">
+                <button class="timer-btn primary" onclick="toggleTimer('${ex.id}', ${ex.duration})">
+                  ${isTimerRunning ? '⏸️ Пауза' : '▶️ Старт'}
+                </button>
+                <button class="timer-btn secondary" onclick="resetTimer('${ex.id}', ${ex.duration})">
+                  🔄 Сброс
+                </button>
+                <span class="timer-display ${timerSeconds === 0 && activeTimer !== ex.id ? '' : ''}" id="timer-${ex.id}">
+                  ${formatTime(isTimerRunning ? timerSeconds : ex.duration)}
+                </span>
+              </div>
+              <div class="timer-progress">
+                <div class="timer-progress-fill" id="progress-${ex.id}" style="width: ${isTimerRunning ? ((ex.duration - timerSeconds) / ex.duration * 100) : 0}%"></div>
+              </div>
+
+              <button class="details-toggle" onclick="toggleDetails('${ex.id}')">
+                📖 Показать инструкцию
+              </button>
+
+              <div class="details" id="details-${ex.id}">
+                <div class="steps">
+                  <h4>📝 Как выполнять:</h4>
+                  ${ex.steps.map((step, i) => `
+                    <div class="step">
+                      <div class="step-num">${i + 1}</div>
+                      <div class="step-content">
+                        <div class="step-text">${step.text}</div>
+                        ${step.tip ? `<div class="step-tip">💡 ${step.tip}</div>` : ''}
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+                <div class="benefits">
+                  <h4>✨ Чем полезно:</h4>
+                  <ul>
+                    ${ex.benefits.map(b => `<li>✓ ${b}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      renderTabs();
+      renderDay();
+    }
+
+    // ============ ACTIONS ============
+    function toggleExercise(dayId, exId) {
+      if (!completed[dayId]) completed[dayId] = {};
+      completed[dayId][exId] = !completed[dayId][exId];
+      saveProgress();
+      render();
+    }
+
+    function toggleDetails(exId) {
+      const details = document.getElementById(`details-${exId}`);
+      const btn = details.previousElementSibling;
+      
+      if (details.classList.contains('open')) {
+        details.classList.remove('open');
+        btn.textContent = '📖 Показать инструкцию';
+      } else {
+        details.classList.add('open');
+        btn.textContent = '📖 Скрыть инструкцию';
+      }
+    }
+
+    function toggleTimer(exId, duration) {
+      if (activeTimer === exId) {
+        stopTimer();
+      } else {
+        startTimer(exId, duration);
+      }
+    }
+
+    function startTimer(exId, duration) {
+      stopTimer();
+      activeTimer = exId;
+      timerSeconds = duration;
+      
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        
+        const display = document.getElementById(`timer-${exId}`);
+        const progress = document.getElementById(`progress-${exId}`);
+        
+        if (display) {
+          display.textContent = formatTime(timerSeconds);
+          progress.style.width = ((duration - timerSeconds) / duration * 100) + '%';
+        }
+        
+        if (timerSeconds <= 0) {
+          stopTimer();
+          // Auto-complete exercise
+          const day = weeklyData.find(d => d.id === activeDay);
+          const ex = day?.exercises.find(e => e.id === exId);
+          if (ex && !completed[activeDay]?.[exId]) {
+            if (!completed[activeDay]) completed[activeDay] = {};
+            completed[activeDay][exId] = true;
+            saveProgress();
+            render();
+          }
+          // Play sound or notification
+          try {
+            const audio = new AudioContext();
+            const oscillator = audio.createOscillator();
+            oscillator.connect(audio.destination);
+            oscillator.frequency.value = 800;
+            oscillator.start();
+            setTimeout(() => oscillator.stop(), 200);
+          } catch(e) {}
+        }
+      }, 1000);
+      
+      render();
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      activeTimer = null;
+    }
+
+    function resetTimer(exId, duration) {
+      if (activeTimer === exId) {
+        stopTimer();
+      }
+      timerSeconds = duration;
+      const display = document.getElementById(`timer-${exId}`);
+      const progress = document.getElementById(`progress-${exId}`);
+      if (display) {
+        display.textContent = formatTime(duration);
+        progress.style.width = '0%';
+      }
+    }
+
+    function resetDay() {
+      if (confirm('Сбросить прогресс за этот день?')) {
+        delete completed[activeDay];
+        saveProgress();
+        stopTimer();
+        render();
+      }
+    }
+
+    function updateWeekProgress() {
+      const totalCompleted = Object.values(completed).reduce(
+        (acc, day) => acc + Object.values(day).filter(Boolean).length, 0
+      );
+      const totalExercises = weeklyData.reduce((acc, day) => acc + day.exercises.length, 0);
+      const percent = Math.round((totalCompleted / totalExercises) * 100);
+
+      document.getElementById('weekProgressText').textContent = `${totalCompleted} / ${totalExercises} упражнений`;
+      document.getElementById('weekProgressBar').style.width = percent + '%';
+      document.getElementById('weekPercent').textContent = percent + '% выполнено';
+    }
+
+    // ============ INIT ============
+    render();
+  </script>
+</b>ody>
+</html>
