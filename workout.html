@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Физическая Тренировка</title>
+  <title>Тренировка для ребенка</title>
   <style>
     * {
       margin: 0;
@@ -12,7 +12,7 @@
     }
 
     :root {
-      --primary: #2563eb; /* Синий цвет для тренировок */
+      --primary: #2563eb;
       --primary-light: #60a5fa;
       --success: #10b981;
       --bg: #f8fafc;
@@ -74,7 +74,7 @@
     }
 
     .top-nav a.active {
-      background: linear-gradient(135deg, var(--primary), #0ea5e9); /* Синий градиент */
+      background: linear-gradient(135deg, var(--primary), #0ea5e9);
       color: white;
       box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
     }
@@ -149,6 +149,51 @@
       margin-top: 4px;
     }
 
+    /* Day Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--card);
+      padding: 6px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      overflow-x: auto;
+    }
+
+    .tab {
+      flex: 1;
+      min-width: 40px;
+      padding: 10px 8px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, var(--primary), #0ea5e9);
+      color: white;
+    }
+
+    .tab.completed::after {
+      content: '✓';
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      font-size: 10px;
+      color: var(--success);
+    }
+
+    .tab.active.completed::after {
+      color: white;
+    }
+
     /* Day Header */
     .day-header {
       background: linear-gradient(135deg, #dbeafe, #e0f2fe);
@@ -161,6 +206,17 @@
       .day-header {
         background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(14, 165, 233, 0.2));
       }
+    }
+
+    .day-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), #0ea5e9);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 8px;
     }
 
     .day-title {
@@ -224,7 +280,7 @@
       justify-content: center;
       flex-shrink: 0;
       transition: all 0.2s;
-      margin-top: 12px; /* Выравнивание по иконке */
+      margin-top: 12px;
     }
 
     .exercise-checkbox.checked {
@@ -278,7 +334,7 @@
       margin-bottom: 12px;
     }
 
-    /* Buttons */
+    /* Reset Button */
     .reset-btn {
       background: none;
       border: none;
@@ -311,7 +367,7 @@
       .header h1 {
         font-size: 1.8rem;
       }
-      
+
       .exercise-header {
         flex-wrap: wrap;
       }
@@ -320,6 +376,15 @@
         width: 40px;
         height: 40px;
         font-size: 22px;
+      }
+
+      .tabs {
+        gap: 2px;
+      }
+
+      .tab {
+        padding: 8px 4px;
+        font-size: 0.75rem;
       }
       
       .top-nav a {
@@ -342,77 +407,147 @@
     <!-- Header -->
     <header class="header">
       <div class="header-icon">🏋️</div>
-      <h1>Физическая Тренировка</h1>
-      <p>Ежедневный комплекс упражнений для тела</p>
+      <h1>Спорт каждый день</h1>
+      <p>Комплекс упражнений на неделю для силы и ловкости</p>
     </header>
+
+    <!-- Week Progress -->
+    <div class="progress-card">
+      <div class="progress-header">
+        <span>Прогресс за неделю</span>
+        <span id="weekProgressText">0 / 42 упражнений</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="weekProgressBar" style="width: 0%"></div>
+      </div>
+      <div class="progress-text" id="weekPercent">0% выполнено</div>
+    </div>
+
+    <!-- Day Tabs -->
+    <div class="tabs" id="dayTabs"></div>
 
     <!-- Day Content -->
     <div id="dayContent"></div>
 
     <!-- Footer -->
     <footer class="footer">
-      <p>💪 Занимайтесь регулярно для лучших результатов</p>
+      <p>💪 Занимайся регулярно, чтобы стать сильнее!</p>
       <p style="margin-top: 8px; font-size: 0.75rem;">Прогресс сохраняется автоматически</p>
     </footer>
   </div>
 
   <script>
     // ============ DATA ============
-    const exercises = [
-      { 
-        id: 'w1', 
-        name: "Приседания", 
-        sets: 3, 
-        reps: 15, 
-        emoji: '🦵', 
-        desc: 'Держи спину прямо, пятки на полу. Отлично тренирует ноги и ягодицы.' 
+    const weeklyData = [
+      {
+        id: 'monday',
+        name: 'Понедельник',
+        shortName: 'Пн',
+        title: '🦘 Прыгучесть и ноги',
+        description: 'Укрепляем мышцы ног и учимся прыгать высоко!',
+        exercises: [
+          { id: 'm1', name: "Прыжки на двух ногах", sets: 2, reps: "20 раз", emoji: '🦘', desc: "Прыгай на месте, мягко приземляясь на носочки." },
+          { id: 'm2', name: "Приседания", sets: 2, reps: "15 раз", emoji: '🦵', desc: "Спина прямая, пятки не отрывать, как будто садишься на стул." },
+          { id: 'm3', name: "Мельница", sets: 2, reps: "10 раз", emoji: '🌪️', desc: "Ноги шире плеч, касаемся левой рукой правого носка и наоборот." },
+          { id: 'm4', name: "Лодочка", sets: 2, reps: "10 сек", emoji: '🚣', desc: "Лежа на животе, тянем руки и ноги вверх, покачиваемся." },
+          { id: 'm5', name: "Растяжка", sets: 1, reps: "30 сек", emoji: '🤸', desc: "Наклоны к ногам, сидя на полу." }
+        ]
       },
-      { 
-        id: 'w2', 
-        name: "Отжимания", 
-        sets: 3, 
-        reps: 12, 
-        emoji: '💪', 
-        desc: 'Корпус прямой, опускайся почти до касания грудью пола. Укрепляет грудь и руки.' 
+      {
+        id: 'tuesday',
+        name: 'Вторник',
+        shortName: 'Вт',
+        title: '💪 Сила рук и спины',
+        description: 'Качаем руки и делаем спину ровной и сильной.',
+        exercises: [
+          { id: 't1', name: "Отжимания от стены", sets: 2, reps: "10 раз", emoji: '🧱', desc: "Встань у стены, отжимайся от нее руками. Спина прямая." },
+          { id: 't2', name: "Супергерой", sets: 2, reps: "10 сек", emoji: '🦸', desc: "Лежа на животе, подними руки и ноги вверх, замри." },
+          { id: 't3', name: "Лыжник", sets: 2, reps: "20 раз", emoji: '⛷️', desc: "Наклоны вперед, руками тянемся к пальцам ног." },
+          { id: 't4', name: "Планка", sets: 2, reps: "15 сек", emoji: '🧱', desc: "Упор лежа на локтях, тело как струнка." },
+          { id: 't5', name: "Растяжка", sets: 1, reps: "30 сек", emoji: '🤸', desc: "Сцепи руки в замок за спиной, потянись." }
+        ]
       },
-      { 
-        id: 'w3', 
-        name: "Планка", 
-        sets: 3, 
-        reps: "40 сек", 
-        emoji: '🧱', 
-        desc: 'Держи тело ровной линией, напряги пресс и ягодицы. Укрепляет кор.' 
+      {
+        id: 'wednesday',
+        name: 'Среда',
+        shortName: 'Ср',
+        title: '⚖️ Равновесие и пресс',
+        description: 'Тренируем баланс и делаем животик крепким.',
+        exercises: [
+          { id: 'w1', name: "Цапля", sets: 2, reps: "15 сек", emoji: '🦩', desc: "Стой на одной ноге, вторую согни в колене. Руки в стороны." },
+          { id: 'w2', name: "Велосипед", sets: 2, reps: "20 раз", emoji: '🚲', desc: "Лежа на спине крутим педали в воздухе." },
+          { id: 'w3', name: "Медвежья походка", sets: 2, reps: "10 шагов", emoji: '🐻', desc: "Ходьба на четвереньках (руки и ноги прямые)." },
+          { id: 'w4', name: "Ножницы", sets: 2, reps: "20 раз", emoji: '✂️', desc: "Лежа на спине, скрещиваем прямые ноги в воздухе." },
+          { id: 'w5', name: "Растяжка", sets: 1, reps: "30 сек", emoji: '🤸', desc: "Сидя на пятках, потянись руками вперед по полу." }
+        ]
       },
-      { 
-        id: 'w4', 
-        name: "Выпады", 
-        sets: 3, 
-        reps: "10 на ногу", 
-        emoji: '🚶', 
-        desc: 'Шаг вперёд, колено под углом 90 градусов. Развивает баланс и ноги.' 
+      {
+        id: 'thursday',
+        name: 'Четверг',
+        shortName: 'Чт',
+        title: '🏃 Активный отдых',
+        description: 'Бегаем, прыгаем и веселимся!',
+        exercises: [
+          { id: 'th1', name: "Бег на месте", sets: 2, reps: "40 сек", emoji: '🏃', desc: "Бежим на месте, высоко поднимая колени." },
+          { id: 'th2', name: "Прыжки Звездочка", sets: 2, reps: "15 раз", emoji: '⭐', desc: "Прыжок — руки и ноги врозь, приземление — вместе." },
+          { id: 'th3', name: "Гусиный шаг", sets: 2, reps: "10 шагов", emoji: '🦆', desc: "Присесть и идти в приседе, руки на поясе." },
+          { id: 'th4', name: "Кошечка", sets: 2, reps: "10 раз", emoji: '🐱', desc: "Стоя на четвереньках, выгибай и прогибай спину." },
+          { id: 'th5', name: "Растяжка", sets: 1, reps: "30 сек", emoji: '🤸', desc: "Покачайся из стороны в сторону, руки над головой." }
+        ]
       },
-      { 
-        id: 'w5', 
-        name: "Скручивания", 
-        sets: 4, 
-        reps: 20, 
-        emoji: '↩️', 
-        desc: 'Поднимай лопатки от пола за счёт мышц пресса, поясница прижата.' 
+      {
+        id: 'friday',
+        name: 'Пятница',
+        shortName: 'Пт',
+        title: '🤸 Гибкость и ловкость',
+        description: 'Учимся управлять своим телом.',
+        exercises: [
+          { id: 'f1', name: "Качели", sets: 2, reps: "15 раз", emoji: '🎢', desc: "Лежа на спине, раскачиваемся и садимся без помощи рук." },
+          { id: 'f2', name: "Прыжки через скакалку", sets: 2, reps: "30 раз", emoji: '⏭️', desc: "Имитируем прыжки через скакалку (даже если её нет)." },
+          { id: 'f3', name: "Боковая планка", sets: 2, reps: "10 сек", emoji: '📏', desc: "Лежа на боку, поднимись на локте, тело прямое." },
+          { id: 'f4', name: "Бег с захлестом", sets: 2, reps: "20 раз", emoji: '🦵', desc: "Бег на месте, стараясь пятками достать до ягодиц." },
+          { id: 'f5', name: "Растяжка", sets: 1, reps: "30 сек", emoji: '🤸', desc: "Глубокий выпад вперед, тянем бедро." }
+        ]
       },
-      { 
-        id: 'w6', 
-        name: "Растяжка", 
-        sets: 1, 
-        reps: "5 мин", 
-        emoji: '🤸', 
-        desc: 'Плавные наклоны и вытяжения. Расслабляет мышцы после нагрузки.' 
+      {
+        id: 'saturday',
+        name: 'Суббота',
+        shortName: 'Сб',
+        title: '🦸 Супер-тренировка',
+        description: 'Повторяем всё самое интересное!',
+        exercises: [
+          { id: 's1', name: "Приседания-прыжки", sets: 2, reps: "10 раз", emoji: '⚡', desc: "Присел — выпрыгнул вверх!" },
+          { id: 's2', name: "Отжимания от пола", sets: 2, reps: "5-10 раз", emoji: '💪', desc: "Можно с колен, если тяжело. Стараемся!" },
+          { id: 's3', name: "Ласточка", sets: 2, reps: "10 сек", emoji: '🕊️', desc: "Стоя на одной ноге, наклонись вперед, руки в стороны." },
+          { id: 's4', name: "Скручивания", sets: 2, reps: "15 раз", emoji: '🔄', desc: "Лежа на спине, тянемся локтем к противоположному колену." },
+          { id: 's5', name: "Растяжка", sets: 1, reps: "1 мин", emoji: '🤸', desc: "Полный комплекс растяжки для всего тела." }
+        ]
+      },
+      {
+        id: 'sunday',
+        name: 'Воскресенье',
+        shortName: 'Вс',
+        title: '🧘 День восстановления',
+        description: 'Отдыхаем, дышим и расслабляемся.',
+        exercises: [
+          { id: 'su1', name: "Глубокое дыхание", sets: 1, reps: "10 вдохов", emoji: '🌬️', desc: "Глубокий вдох носом, медленный выдох ртом." },
+          { id: 'su2', name: "Поза ребенка", sets: 1, reps: "30 сек", emoji: '👶', desc: "Сидя на пятках, наклонись вперед, лоб на пол." },
+          { id: 'su3', name: "Легкие наклоны", sets: 1, reps: "10 раз", emoji: '↔️', desc: "Плавные наклоны влево и вправо." },
+          { id: 'su4', name: "Потягушки", sets: 1, reps: "5 раз", emoji: '🛌', desc: "Лежа на спине, потянись руками и ногами в разные стороны." }
+        ]
       }
     ];
 
     // ============ STATE ============
+    let activeDay = getCurrentDay();
     let completed = loadProgress();
 
     // ============ UTILS ============
+    function getCurrentDay() {
+      const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      return days[new Date().getDay()];
+    }
+
     function loadProgress() {
       try {
         const saved = localStorage.getItem('workoutProgress');
@@ -426,50 +561,66 @@
       localStorage.setItem('workoutProgress', JSON.stringify(completed));
     }
 
-    function getTotalSets() {
-      return exercises.reduce((sum, ex) => sum + ex.sets, 0);
-    }
-
-    function getCompletedSets() {
-      let count = 0;
-      exercises.forEach(ex => {
-        if (completed[ex.id]) count += ex.sets;
-      });
-      return count;
-    }
-
     // ============ RENDER ============
+    function renderTabs() {
+      const tabs = document.getElementById('dayTabs');
+      tabs.innerHTML = weeklyData.map(day => {
+        const dayCompleted = completed[day.id] ? Object.values(completed[day.id]).filter(Boolean).length : 0;
+        const isComplete = dayCompleted === day.exercises.length;
+        const isActive = day.id === activeDay;
+        
+        return `
+          <button class="tab ${isActive ? 'active' : ''} ${isComplete ? 'completed' : ''}" data-day="${day.id}">
+            ${day.shortName}
+          </button>
+        `;
+      }).join('');
+
+      tabs.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          activeDay = tab.dataset.day;
+          renderTabs();
+          renderDay();
+        });
+      });
+    }
+
     function renderDay() {
-      const totalSets = getTotalSets();
-      const completedSets = getCompletedSets();
-      const progressPercent = totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
+      const day = weeklyData.find(d => d.id === activeDay);
+      if (!day) return;
+
+      const dayCompleted = completed[day.id] ? Object.values(completed[day.id]).filter(Boolean).length : 0;
+      const progressPercent = (dayCompleted / day.exercises.length) * 100;
 
       const content = document.getElementById('dayContent');
       content.innerHTML = `
         <div class="day-header">
-          <h2 class="day-title">📋 Комплекс на сегодня</h2>
-          <p class="day-desc">Выполняй упражнения последовательно, отдыхая между подходами.</p>
+          <div class="day-badge">${day.name}</div>
+          <h2 class="day-title">${day.title}</h2>
+          <p class="day-desc">${day.description}</p>
           <div class="day-progress">
             <div class="progress-bar">
               <div class="progress-fill" style="width: ${progressPercent}%"></div>
             </div>
-            <span>${completedSets} / ${totalSets} подходов</span>
+            <span>${dayCompleted} / ${day.exercises.length}</span>
           </div>
           <button class="reset-btn" onclick="resetDay()">
-            🔄 Сбросить прогресс
+            🔄 Сбросить день
           </button>
         </div>
-        ${exercises.map(ex => renderExercise(ex)).join('')}
+        ${day.exercises.map(ex => renderExercise(ex, day.id)).join('')}
       `;
+
+      updateWeekProgress();
     }
 
-    function renderExercise(ex) {
-      const isCompleted = completed[ex.id] || false;
+    function renderExercise(ex, dayId) {
+      const isCompleted = completed[dayId]?.[ex.id] || false;
 
       return `
         <div class="exercise ${isCompleted ? 'completed' : ''}" data-exercise="${ex.id}">
           <div class="exercise-header">
-            <div class="exercise-checkbox ${isCompleted ? 'checked' : ''}" onclick="toggleExercise('${ex.id}')">
+            <div class="exercise-checkbox ${isCompleted ? 'checked' : ''}" onclick="toggleExercise('${dayId}', '${ex.id}')">
               ${isCompleted ? '✓' : ''}
             </div>
             <div class="exercise-icon">${ex.emoji}</div>
@@ -484,22 +635,36 @@
     }
 
     function render() {
+      renderTabs();
       renderDay();
     }
 
     // ============ ACTIONS ============
-    function toggleExercise(exId) {
-      completed[exId] = !completed[exId];
+    function toggleExercise(dayId, exId) {
+      if (!completed[dayId]) completed[dayId] = {};
+      completed[dayId][exId] = !completed[dayId][exId];
       saveProgress();
       render();
     }
 
     function resetDay() {
-      if (confirm('Сбросить весь прогресс за сегодня?')) {
-        completed = {};
+      if (confirm('Сбросить прогресс за этот день?')) {
+        delete completed[activeDay];
         saveProgress();
         render();
       }
+    }
+
+    function updateWeekProgress() {
+      const totalCompleted = Object.values(completed).reduce(
+        (acc, day) => acc + Object.values(day).filter(Boolean).length, 0
+      );
+      const totalExercises = weeklyData.reduce((acc, day) => acc + day.exercises.length, 0);
+      const percent = Math.round((totalCompleted / totalExercises) * 100);
+
+      document.getElementById('weekProgressText').textContent = `${totalCompleted} / ${totalExercises} упражнений`;
+      document.getElementById('weekProgressBar').style.width = percent + '%';
+      document.getElementById('weekPercent').textContent = percent + '% выполнено';
     }
 
     // ============ INIT ============
