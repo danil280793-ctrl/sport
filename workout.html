@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Тренировка для ребенка</title>
+  <!-- Мета-теги для установки на экран телефона (PWA) -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#2563eb">
+  
   <style>
     * {
       margin: 0;
@@ -15,6 +20,7 @@
       --primary: #2563eb;
       --primary-light: #60a5fa;
       --success: #10b981;
+      --gold: #f59e0b;
       --bg: #f8fafc;
       --card: #ffffff;
       --text: #1e293b;
@@ -112,41 +118,103 @@
       font-size: 1.1rem;
     }
 
-    /* Progress */
-    .progress-card {
+    /* Stats Cards (Streak & Progress) */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
       background: var(--card);
       border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 24px;
+      padding: 16px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      text-align: center;
     }
 
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
     }
 
-    .progress-bar {
-      height: 8px;
-      background: var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary), #0ea5e9);
-      border-radius: 4px;
-      transition: width 0.3s ease;
-    }
-
-    .progress-text {
-      text-align: right;
-      font-size: 0.8rem;
+    .stat-label {
+      font-size: 0.85rem;
       color: var(--text-muted);
-      margin-top: 4px;
+    }
+
+    .streak-fire {
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Achievements Section */
+    .achievements-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      padding: 10px;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .achievement-badge {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+      position: relative;
+      filter: grayscale(100%);
+      opacity: 0.5;
+      transition: all 0.3s;
+    }
+
+    .achievement-badge.unlocked {
+      filter: grayscale(0%);
+      opacity: 1;
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+      animation: bounceIn 0.6s;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .achievement-tooltip {
+      visibility: hidden;
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: var(--bg);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .achievement-badge:hover .achievement-tooltip {
+      visibility: visible;
     }
 
     /* Day Tabs */
@@ -238,9 +306,19 @@
       margin-top: 12px;
     }
 
-    .day-progress .progress-bar {
+    .progress-bar {
       flex: 1;
       height: 6px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #0ea5e9);
+      border-radius: 4px;
+      transition: width 0.3s ease;
     }
 
     .day-progress span {
@@ -362,41 +440,47 @@
       font-size: 0.85rem;
     }
 
+    /* Achievement Popup */
+    .achievement-popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--gold), #fbbf24);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      font-weight: bold;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: none;
+      animation: dropIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes dropIn {
+      0% { top: -100px; opacity: 0; }
+      100% { top: 20px; opacity: 1; }
+    }
+
     /* Responsive */
     @media (max-width: 600px) {
-      .header h1 {
-        font-size: 1.8rem;
-      }
-
-      .exercise-header {
-        flex-wrap: wrap;
-      }
-
-      .exercise-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 22px;
-      }
-
-      .tabs {
-        gap: 2px;
-      }
-
-      .tab {
-        padding: 8px 4px;
-        font-size: 0.75rem;
-      }
-      
-      .top-nav a {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-      }
+      .header h1 { font-size: 1.8rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .exercise-header { flex-wrap: wrap; }
+      .exercise-icon { width: 40px; height: 40px; font-size: 22px; }
+      .tabs { gap: 2px; }
+      .tab { padding: 8px 4px; font-size: 0.75rem; }
+      .top-nav a { padding: 8px 12px; font-size: 0.85rem; }
     }
   </style>
 </head>
 <body>
+  <!-- Popup для достижений -->
+  <div class="achievement-popup" id="achievementPopup">
+    🏆 Новое достижение разблокировано!
+  </div>
+
   <div class="container">
-    
     <!-- НАВИГАЦИЯ -->
     <nav class="top-nav">
       <a href="index.html">🏠 Главная</a>
@@ -411,16 +495,21 @@
       <p>Комплекс упражнений на неделю для силы и ловкости</p>
     </header>
 
-    <!-- Week Progress -->
-    <div class="progress-card">
-      <div class="progress-header">
-        <span>Прогресс за неделю</span>
-        <span id="weekProgressText">0 / 42 упражнений</span>
+    <!-- Stats Grid (Streak + Progress) -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value"><span id="streakCount">0</span> <span class="streak-fire">🔥</span></div>
+        <div class="stat-label">Дней подряд</div>
       </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="weekProgressBar" style="width: 0%"></div>
+      <div class="stat-card">
+        <div class="stat-value" id="totalDone">0</div>
+        <div class="stat-label">Всего упражнений</div>
       </div>
-      <div class="progress-text" id="weekPercent">0% выполнено</div>
+    </div>
+
+    <!-- Achievements Row -->
+    <div class="achievements-row" id="achievementsRow">
+      <!-- Бейджи будут вставлены здесь через JS -->
     </div>
 
     <!-- Day Tabs -->
@@ -436,15 +525,14 @@
     </footer>
   </div>
 
+  <!-- Подключаем библиотеку конфетти -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
   <script>
     // ============ DATA ============
     const weeklyData = [
       {
-        id: 'monday',
-        name: 'Понедельник',
-        shortName: 'Пн',
-        title: '🦘 Прыгучесть и ноги',
-        description: 'Укрепляем мышцы ног и учимся прыгать высоко!',
+        id: 'monday', name: 'Понедельник', shortName: 'Пн', title: '🦘 Прыгучесть и ноги', description: 'Укрепляем мышцы ног и учимся прыгать высоко!',
         exercises: [
           { id: 'm1', name: "Прыжки на двух ногах", sets: 2, reps: "20 раз", emoji: '🦘', desc: "Прыгай на месте, мягко приземляясь на носочки." },
           { id: 'm2', name: "Приседания", sets: 2, reps: "15 раз", emoji: '🦵', desc: "Спина прямая, пятки не отрывать, как будто садишься на стул." },
@@ -454,11 +542,7 @@
         ]
       },
       {
-        id: 'tuesday',
-        name: 'Вторник',
-        shortName: 'Вт',
-        title: '💪 Сила рук и спины',
-        description: 'Качаем руки и делаем спину ровной и сильной.',
+        id: 'tuesday', name: 'Вторник', shortName: 'Вт', title: '💪 Сила рук и спины', description: 'Качаем руки и делаем спину ровной и сильной.',
         exercises: [
           { id: 't1', name: "Отжимания от стены", sets: 2, reps: "10 раз", emoji: '🧱', desc: "Встань у стены, отжимайся от нее руками. Спина прямая." },
           { id: 't2', name: "Супергерой", sets: 2, reps: "10 сек", emoji: '🦸', desc: "Лежа на животе, подними руки и ноги вверх, замри." },
@@ -468,11 +552,7 @@
         ]
       },
       {
-        id: 'wednesday',
-        name: 'Среда',
-        shortName: 'Ср',
-        title: '⚖️ Равновесие и пресс',
-        description: 'Тренируем баланс и делаем животик крепким.',
+        id: 'wednesday', name: 'Среда', shortName: 'Ср', title: '⚖️ Равновесие и пресс', description: 'Тренируем баланс и делаем животик крепким.',
         exercises: [
           { id: 'w1', name: "Цапля", sets: 2, reps: "15 сек", emoji: '🦩', desc: "Стой на одной ноге, вторую согни в колене. Руки в стороны." },
           { id: 'w2', name: "Велосипед", sets: 2, reps: "20 раз", emoji: '🚲', desc: "Лежа на спине крутим педали в воздухе." },
@@ -482,11 +562,7 @@
         ]
       },
       {
-        id: 'thursday',
-        name: 'Четверг',
-        shortName: 'Чт',
-        title: '🏃 Активный отдых',
-        description: 'Бегаем, прыгаем и веселимся!',
+        id: 'thursday', name: 'Четверг', shortName: 'Чт', title: '🏃 Активный отдых', description: 'Бегаем, прыгаем и веселимся!',
         exercises: [
           { id: 'th1', name: "Бег на месте", sets: 2, reps: "40 сек", emoji: '🏃', desc: "Бежим на месте, высоко поднимая колени." },
           { id: 'th2', name: "Прыжки Звездочка", sets: 2, reps: "15 раз", emoji: '⭐', desc: "Прыжок — руки и ноги врозь, приземление — вместе." },
@@ -496,11 +572,7 @@
         ]
       },
       {
-        id: 'friday',
-        name: 'Пятница',
-        shortName: 'Пт',
-        title: '🤸 Гибкость и ловкость',
-        description: 'Учимся управлять своим телом.',
+        id: 'friday', name: 'Пятница', shortName: 'Пт', title: '🤸 Гибкость и ловкость', description: 'Учимся управлять своим телом.',
         exercises: [
           { id: 'f1', name: "Качели", sets: 2, reps: "15 раз", emoji: '🎢', desc: "Лежа на спине, раскачиваемся и садимся без помощи рук." },
           { id: 'f2', name: "Прыжки через скакалку", sets: 2, reps: "30 раз", emoji: '⏭️', desc: "Имитируем прыжки через скакалку (даже если её нет)." },
@@ -510,11 +582,7 @@
         ]
       },
       {
-        id: 'saturday',
-        name: 'Суббота',
-        shortName: 'Сб',
-        title: '🦸 Супер-тренировка',
-        description: 'Повторяем всё самое интересное!',
+        id: 'saturday', name: 'Суббота', shortName: 'Сб', title: '🦸 Супер-тренировка', description: 'Повторяем всё самое интересное!',
         exercises: [
           { id: 's1', name: "Приседания-прыжки", sets: 2, reps: "10 раз", emoji: '⚡', desc: "Присел — выпрыгнул вверх!" },
           { id: 's2', name: "Отжимания от пола", sets: 2, reps: "5-10 раз", emoji: '💪', desc: "Можно с колен, если тяжело. Стараемся!" },
@@ -524,11 +592,7 @@
         ]
       },
       {
-        id: 'sunday',
-        name: 'Воскресенье',
-        shortName: 'Вс',
-        title: '🧘 День восстановления',
-        description: 'Отдыхаем, дышим и расслабляемся.',
+        id: 'sunday', name: 'Воскресенье', shortName: 'Вс', title: '🧘 День восстановления', description: 'Отдыхаем, дышим и расслабляемся.',
         exercises: [
           { id: 'su1', name: "Глубокое дыхание", sets: 1, reps: "10 вдохов", emoji: '🌬️', desc: "Глубокий вдох носом, медленный выдох ртом." },
           { id: 'su2', name: "Поза ребенка", sets: 1, reps: "30 сек", emoji: '👶', desc: "Сидя на пятках, наклонись вперед, лоб на пол." },
@@ -538,9 +602,39 @@
       }
     ];
 
+    const achievementsList = [
+      { id: 'first', name: 'Первый шаг', icon: '👣', desc: 'Выполнить первое упражнение', check: (state) => state.total >= 1 },
+      { id: 'five', name: 'Разгон', icon: '🚀', desc: 'Выполнить 5 упражнений', check: (state) => state.total >= 5 },
+      { id: 'streak3', name: 'На волне', icon: '🏄', desc: '3 дня подряд', check: (state) => state.streak >= 3 },
+      { id: 'streak7', name: 'Железная воля', icon: '🔩', desc: '7 дней подряд', check: (state) => state.streak >= 7 },
+      { id: 'total50', name: 'Атлет', icon: '🏋️', desc: '50 упражнений всего', check: (state) => state.total >= 50 }
+    ];
+
     // ============ STATE ============
     let activeDay = getCurrentDay();
-    let completed = loadProgress();
+    let completed = {};
+    let stats = {
+        streak: 0,
+        lastDate: null,
+        total: 0,
+        unlockedAch: []
+    };
+
+    // ============ INIT STATE ============
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('workoutProgress');
+        const data = saved ? JSON.parse(saved) : {};
+        completed = data.completed || {};
+        stats = data.stats || { streak: 0, lastDate: null, total: 0, unlockedAch: [] };
+      } catch (e) {
+        console.error("Error loading state", e);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('workoutProgress', JSON.stringify({ completed, stats }));
+    }
 
     // ============ UTILS ============
     function getCurrentDay() {
@@ -548,17 +642,93 @@
       return days[new Date().getDay()];
     }
 
-    function loadProgress() {
-      try {
-        const saved = localStorage.getItem('workoutProgress');
-        return saved ? JSON.parse(saved) : {};
-      } catch (e) {
-        return {};
+    function getDateStr() {
+      return new Date().toDateString();
+    }
+
+    // ============ LOGIC ============
+    
+    // Обновление серии (Streak)
+    function updateStreak() {
+      const today = getDateStr();
+      const last = stats.lastDate;
+
+      if (last === today) {
+        // Уже занимались сегодня, ничего не меняем
+        return;
+      }
+
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toDateString();
+
+      if (last === yesterdayStr) {
+        // Занимались вчера -> продолжаем серию
+        stats.streak++;
+      } else if (last !== today) {
+        // Пропустили день или первое занятие
+        stats.streak = 1;
+      }
+
+      stats.lastDate = today;
+      saveState();
+    }
+
+    // Проверка достижений
+    function checkAchievements() {
+      let newUnlock = false;
+      
+      achievementsList.forEach(ach => {
+        if (!stats.unlockedAch.includes(ach.id) && ach.check(stats)) {
+          stats.unlockedAch.push(ach.id);
+          showAchievementPopup(ach);
+          newUnlock = true;
+        }
+      });
+
+      if (newUnlock) {
+        saveState();
+        renderAchievements();
       }
     }
 
-    function saveProgress() {
-      localStorage.setItem('workoutProgress', JSON.stringify(completed));
+    function showAchievementPopup(ach) {
+      const popup = document.getElementById('achievementPopup');
+      popup.innerHTML = `🏆 ${ach.name} разблокировано!`;
+      popup.style.display = 'block';
+      
+      // Скрываем через 3 секунды
+      setTimeout(() => {
+        popup.style.display = 'none';
+      }, 3000);
+    }
+
+    // Конфетти
+    function celebrate() {
+      var duration = 3 * 1000;
+      var animationEnd = Date.now() + duration;
+      var colors = ['#bb0000', '#ffffff', '#00bb00', '#0000bb', '#ffdd00'];
+
+      (function frame() {
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: colors
+        });
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: colors
+        });
+
+        if (Date.now() < animationEnd) {
+          requestAnimationFrame(frame);
+        }
+      }());
     }
 
     // ============ RENDER ============
@@ -610,8 +780,6 @@
         </div>
         ${day.exercises.map(ex => renderExercise(ex, day.id)).join('')}
       `;
-
-      updateWeekProgress();
     }
 
     function renderExercise(ex, dayId) {
@@ -634,7 +802,34 @@
       `;
     }
 
+    function renderStats() {
+        // Считаем всего выполненных
+        let totalCount = 0;
+        Object.values(completed).forEach(dayEx => {
+            totalCount += Object.values(dayEx).filter(Boolean).length;
+        });
+        stats.total = totalCount;
+        
+        document.getElementById('streakCount').innerText = stats.streak;
+        document.getElementById('totalDone').innerText = stats.total;
+    }
+
+    function renderAchievements() {
+        const row = document.getElementById('achievementsRow');
+        row.innerHTML = achievementsList.map(ach => {
+            const isUnlocked = stats.unlockedAch.includes(ach.id);
+            return `
+                <div class="achievement-badge ${isUnlocked ? 'unlocked' : ''}">
+                    ${ach.icon}
+                    <span class="achievement-tooltip">${ach.name}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
     function render() {
+      renderStats();
+      renderAchievements();
       renderTabs();
       renderDay();
     }
@@ -642,32 +837,44 @@
     // ============ ACTIONS ============
     function toggleExercise(dayId, exId) {
       if (!completed[dayId]) completed[dayId] = {};
-      completed[dayId][exId] = !completed[dayId][exId];
-      saveProgress();
+      
+      // Если уже было выполнено, снимаем галочку (минусуем прогресс)
+      if (completed[dayId][exId]) {
+          completed[dayId][exId] = false;
+      } else {
+          // Ставим галочку
+          completed[dayId][exId] = true;
+          
+          // Обновляем серию при первом действии за день
+          updateStreak();
+          
+          // Проверяем достижения
+          stats.total++; // Временно увеличиваем для проверки
+          checkAchievements();
+          
+          // Проверяем: если это было последнее упражнение в дне -> ЗАПУСК САЛЮТА
+          const dayData = weeklyData.find(d => d.id === dayId);
+          const allDone = dayData.exercises.every(ex => completed[dayId]?.[ex.id]);
+          
+          if (allDone) {
+            celebrate();
+          }
+      }
+      
+      saveState();
       render();
     }
 
     function resetDay() {
       if (confirm('Сбросить прогресс за этот день?')) {
         delete completed[activeDay];
-        saveProgress();
+        saveState();
         render();
       }
     }
 
-    function updateWeekProgress() {
-      const totalCompleted = Object.values(completed).reduce(
-        (acc, day) => acc + Object.values(day).filter(Boolean).length, 0
-      );
-      const totalExercises = weeklyData.reduce((acc, day) => acc + day.exercises.length, 0);
-      const percent = Math.round((totalCompleted / totalExercises) * 100);
-
-      document.getElementById('weekProgressText').textContent = `${totalCompleted} / ${totalExercises} упражнений`;
-      document.getElementById('weekProgressBar').style.width = percent + '%';
-      document.getElementById('weekPercent').textContent = percent + '% выполнено';
-    }
-
     // ============ INIT ============
+    loadState();
     render();
   </script>
 </body>
