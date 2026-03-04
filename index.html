@@ -85,8 +85,8 @@
     /* Header */
     .header {
       text-align: center;
-      margin-bottom: 40px;
-      margin-top: 20px;
+      margin-bottom: 30px;
+      margin-top: 10px;
     }
 
     .header-icon {
@@ -103,7 +103,7 @@
     }
 
     .header h1 {
-      font-size: 2.8rem;
+      font-size: 2.2rem;
       background: linear-gradient(135deg, var(--primary), #8b5cf6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -116,6 +116,75 @@
       font-size: 1.1rem;
       max-width: 400px;
       margin: 0 auto;
+    }
+
+    /* Stats Dashboard */
+    .dashboard-section {
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), #8b5cf6);
+    }
+
+    .stat-card.blue::before { background: linear-gradient(90deg, #2563eb, #0ea5e9); }
+    .stat-card.pink::before { background: linear-gradient(90deg, #ec4899, #8b5cf6); }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .streak-icon {
+      display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
     }
 
     /* Menu Cards */
@@ -166,6 +235,10 @@
       box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
     }
 
+    .menu-card-info {
+      flex: 1;
+    }
+
     .menu-card-info h3 {
       font-size: 1.3rem;
       margin-bottom: 4px;
@@ -189,6 +262,15 @@
       opacity: 1;
       transform: translateX(4px);
     }
+    
+    .menu-card-mini-stats {
+        font-size: 0.8rem;
+        color: var(--primary);
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
 
     /* Footer */
     .footer {
@@ -202,7 +284,7 @@
     /* Responsive */
     @media (max-width: 600px) {
       .header h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
       }
 
       .menu-card {
@@ -217,6 +299,10 @@
 
       .menu-card-info h3 {
         font-size: 1.1rem;
+      }
+      
+      .stat-value {
+        font-size: 2rem;
       }
       
       .top-nav a {
@@ -239,9 +325,36 @@
     <!-- Header -->
     <header class="header">
       <div class="header-icon">✨</div>
-      <h1>Привет!</h1>
-      <p>Это твой личный трекер здоровья и развития. Выбери раздел, чтобы начать.</p>
+      <h1>Привет, Чемпион!</h1>
+      <p>Это твой личный кабинет успеха. Посмотри, сколько всего ты уже сделал!</p>
     </header>
+
+    <!-- Stats Dashboard -->
+    <div class="dashboard-section">
+      <div class="section-title">Твои результаты</div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="totalExercises">0</div>
+          <div class="stat-label">Всего заданий</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value"><span id="maxStreak">0</span> <span class="streak-icon">🔥</span></div>
+          <div class="stat-label">Лучшая серия</div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-value" id="workoutTotal">0</div>
+          <div class="stat-label">Тренировок</div>
+        </div>
+        <div class="stat-card pink">
+          <div class="stat-value" id="neuroTotal">0</div>
+          <div class="stat-label">Упражнений для ума</div>
+        </div>
+      </div>
+    </div>
 
     <!-- Menu Grid -->
     <div class="menu-grid">
@@ -250,7 +363,10 @@
         <div class="menu-card-icon">🏋️</div>
         <div class="menu-card-info">
           <h3>Физическая тренировка</h3>
-          <p>Комплекс упражнений для тела, силы и выносливости.</p>
+          <p>Сила, ловкость и выносливость.</p>
+          <div class="menu-card-mini-stats" id="workoutStreakDisplay">
+             Загрузка...
+          </div>
         </div>
         <div class="menu-card-arrow">→</div>
       </a>
@@ -260,7 +376,10 @@
         <div class="menu-card-icon">🧠</div>
         <div class="menu-card-info">
           <h3>Нейрогимнастика</h3>
-          <p>Упражнения для мозга, памяти и концентрации.</p>
+          <p>Память, внимание и концентрация.</p>
+          <div class="menu-card-mini-stats" id="neuroStreakDisplay">
+             Загрузка...
+          </div>
         </div>
         <div class="menu-card-arrow">→</div>
       </a>
@@ -273,5 +392,43 @@
     <p>Создано с заботой о твоем здоровье 🌱</p>
   </footer>
 
+  <script>
+    // Функция для безопасного получения данных
+    function getStats(key) {
+      try {
+        const data = localStorage.getItem(key);
+        if (data) {
+          const parsed = JSON.parse(data);
+          return parsed.stats || { streak: 0, total: 0 };
+        }
+      } catch (e) {
+        console.error("Error reading " + key, e);
+      }
+      return { streak: 0, total: 0 };
+    }
+
+    function updateDashboard() {
+      // Получаем данные из хранилища
+      const workoutStats = getStats('workoutProgress');
+      const neuroStats = getStats('neuroGymProgress');
+
+      // Считаем общие цифры
+      const totalExercises = (workoutStats.total || 0) + (neuroStats.total || 0);
+      const maxStreak = Math.max(workoutStats.streak || 0, neuroStats.streak || 0);
+
+      // Обновляем большие карточки
+      document.getElementById('totalExercises').innerText = totalExercises;
+      document.getElementById('maxStreak').innerText = maxStreak;
+      document.getElementById('workoutTotal').innerText = workoutStats.total || 0;
+      document.getElementById('neuroTotal').innerText = neuroStats.total || 0;
+
+      // Обновляем мини-статистику под карточками меню
+      document.getElementById('workoutStreakDisplay').innerHTML = `🔥 Серия: ${workoutStats.streak || 0} дней`;
+      document.getElementById('neuroStreakDisplay').innerHTML = `🔥 Серия: ${neuroStats.streak || 0} дней`;
+    }
+
+    // Запускаем при загрузке
+    updateDashboard();
+  </script>
 </body>
 </html>
