@@ -1,0 +1,18 @@
+{
+  "name": "Трекер Привычек для Ребенка",
+  "short_name": "Спорт",
+  "description": "Ежедневные упражнения и нейрогимнастика",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2965/2965567.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
