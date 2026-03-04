@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Подключение PWA манифеста -->
+    <link rel="manifest" href="manifest.json">
   <title>Трекер Привычек</title>
   <style>
     * {
@@ -430,5 +432,13 @@
     // Запускаем при загрузке
     updateDashboard();
   </script>
+      <!-- Регистрация Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('Service Worker зарегистрирован'))
+          .catch(err => console.log('Ошибка регистрации SW', err));
+      }
+    </script>
 </body>
 </html>
