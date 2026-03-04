@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Нейрогимнастика - Упражнения для мозга</title>
+  <!-- Мета-теги для установки на экран телефона -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#7c3aed">
+  
   <style>
     * {
       margin: 0;
@@ -15,6 +20,7 @@
       --primary: #7c3aed;
       --primary-light: #a78bfa;
       --success: #10b981;
+      --gold: #f59e0b;
       --bg: #f8fafc;
       --card: #ffffff;
       --text: #1e293b;
@@ -46,7 +52,7 @@
       padding: 20px;
     }
 
-    /* ========== НАВИГАЦИЯ (Добавлено) ========== */
+    /* ========== НАВИГАЦИЯ ========== */
     .top-nav {
       display: flex;
       justify-content: center;
@@ -78,7 +84,6 @@
       color: white;
       box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
     }
-    /* =========================================== */
 
     /* Header */
     .header {
@@ -113,7 +118,105 @@
       font-size: 1.1rem;
     }
 
-    /* Progress */
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .streak-fire {
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Achievements Section */
+    .achievements-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      padding: 10px;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      overflow-x: auto;
+    }
+
+    .achievement-badge {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+      position: relative;
+      filter: grayscale(100%);
+      opacity: 0.5;
+      transition: all 0.3s;
+    }
+
+    .achievement-badge.unlocked {
+      filter: grayscale(0%);
+      opacity: 1;
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+      box-shadow: 0 4px 10px rgba(236, 72, 153, 0.4);
+      animation: bounceIn 0.6s;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .achievement-tooltip {
+      visibility: hidden;
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: var(--bg);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .achievement-badge:hover .achievement-tooltip {
+      visibility: visible;
+    }
+
+    /* Week Progress */
     .progress-card {
       background: var(--card);
       border-radius: 16px;
@@ -367,10 +470,6 @@
       font-weight: 600;
     }
 
-    .timer-display.finished {
-      color: var(--success);
-    }
-
     .timer-progress {
       width: 100%;
       height: 4px;
@@ -524,6 +623,28 @@
       font-size: 0.85rem;
     }
 
+    /* Achievement Popup */
+    .achievement-popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      font-weight: bold;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: none;
+      animation: dropIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes dropIn {
+      0% { top: -100px; opacity: 0; }
+      100% { top: 20px; opacity: 1; }
+    }
+
     /* Responsive */
     @media (max-width: 600px) {
       .header h1 {
@@ -557,9 +678,15 @@
   </style>
 </head>
 <body>
+
+  <!-- Popup для достижений -->
+  <div class="achievement-popup" id="achievementPopup">
+    🏆 Новое достижение разблокировано!
+  </div>
+
   <div class="container">
     
-    <!-- НАВИГАЦИЯ (Добавлено) -->
+    <!-- НАВИГАЦИЯ -->
     <nav class="top-nav">
       <a href="index.html">🏠 Главная</a>
       <a href="workout.html">🏋️ Тренировка</a>
@@ -572,6 +699,23 @@
       <h1>Нейрогимнастика</h1>
       <p>Ежедневные упражнения для активации мозга и развития когнитивных способностей</p>
     </header>
+
+    <!-- Stats Grid (Streak + Progress) -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value"><span id="streakCount">0</span> <span class="streak-fire">🔥</span></div>
+        <div class="stat-label">Дней подряд</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="totalDone">0</div>
+        <div class="stat-label">Всего упражнений</div>
+      </div>
+    </div>
+
+    <!-- Achievements Row -->
+    <div class="achievements-row" id="achievementsRow">
+      <!-- Бейджи будут вставлены здесь через JS -->
+    </div>
 
     <!-- Week Progress -->
     <div class="progress-card">
@@ -597,6 +741,9 @@
       <p style="margin-top: 8px; font-size: 0.75rem;">Прогресс сохраняется автоматически в браузере</p>
     </footer>
   </div>
+
+  <!-- Подключаем библиотеку конфетти -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
   <script>
     // ============ DATA ============
@@ -814,7 +961,7 @@
             steps: [
               { text: 'Встань или сядь прямо, руки свободно висят вдоль тела.' },
               { text: 'На вдохе медленно подними плечи к ушам как можно выше.', tip: 'Напряги мышцы плеч и шеи максимально сильно' },
-              { text: 'Задержись в этом положении на 3-5 секунд, чувствуя напряжение.' },
+              { text: 'Задержись в этом положении на 3-5 секунды, чувствуя напряжение.' },
               { text: 'На выдохе резко «сбрось» плечи вниз, полностью расслабив мышцы.', tip: 'Почувствуй, как уходит напряжение' },
               { text: 'Повтори 5-10 раз, каждый раз расслабляясь всё глубже.' }
             ],
@@ -991,17 +1138,56 @@
       }
     ];
 
+    const achievementsList = [
+      { id: 'first', name: 'Пробуждение', icon: '💡', desc: 'Первое упражнение', check: (state) => state.total >= 1 },
+      { id: 'five', name: 'Разогрев', icon: '🔋', desc: '5 упражнений', check: (state) => state.total >= 5 },
+      { id: 'streak3', name: 'Сосредоточенность', icon: '🧩', desc: '3 дня подряд', check: (state) => state.streak >= 3 },
+      { id: 'streak7', name: 'Ментальная сила', icon: '🧠', desc: '7 дней подряд', check: (state) => state.streak >= 7 },
+      { id: 'total50', name: 'Гений', icon: '🎓', desc: '50 упражнений', check: (state) => state.total >= 50 }
+    ];
+
     // ============ STATE ============
     let activeDay = getCurrentDay();
-    let completed = loadProgress();
+    let completed = {};
+    let stats = {
+        streak: 0,
+        lastDate: null,
+        total: 0,
+        unlockedAch: []
+    };
     let activeTimer = null;
     let timerInterval = null;
     let timerSeconds = 0;
+
+    // ============ INIT STATE ============
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('neuroGymProgress');
+        const data = saved ? JSON.parse(saved) : {};
+        // Migration support
+        if (data.completed) {
+            completed = data.completed;
+            stats = data.stats || { streak: 0, lastDate: null, total: 0, unlockedAch: [] };
+        } else {
+            completed = data || {};
+        }
+      } catch (e) {
+        console.error("Error loading state", e);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('neuroGymProgress', JSON.stringify({ completed, stats }));
+    }
 
     // ============ UTILS ============
     function getCurrentDay() {
       const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
       return days[new Date().getDay()];
+    }
+
+    function getDateStr() {
+      return new Date().toDateString();
     }
 
     function formatTime(seconds) {
@@ -1013,17 +1199,79 @@
       return `${secs} сек`;
     }
 
-    function loadProgress() {
-      try {
-        const saved = localStorage.getItem('neuroGymProgress');
-        return saved ? JSON.parse(saved) : {};
-      } catch (e) {
-        return {};
+    // ============ LOGIC ============
+    function updateStreak() {
+      const today = getDateStr();
+      const last = stats.lastDate;
+
+      if (last === today) return;
+
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toDateString();
+
+      if (last === yesterdayStr) {
+        stats.streak++;
+      } else if (last !== today) {
+        stats.streak = 1;
+      }
+
+      stats.lastDate = today;
+      saveState();
+    }
+
+    function checkAchievements() {
+      let newUnlock = false;
+      
+      achievementsList.forEach(ach => {
+        if (!stats.unlockedAch.includes(ach.id) && ach.check(stats)) {
+          stats.unlockedAch.push(ach.id);
+          showAchievementPopup(ach);
+          newUnlock = true;
+        }
+      });
+
+      if (newUnlock) {
+        saveState();
+        renderAchievements();
       }
     }
 
-    function saveProgress() {
-      localStorage.setItem('neuroGymProgress', JSON.stringify(completed));
+    function showAchievementPopup(ach) {
+      const popup = document.getElementById('achievementPopup');
+      popup.innerHTML = `🏆 ${ach.name} разблокировано!`;
+      popup.style.display = 'block';
+      
+      setTimeout(() => {
+        popup.style.display = 'none';
+      }, 3000);
+    }
+
+    function celebrate() {
+      var duration = 3 * 1000;
+      var animationEnd = Date.now() + duration;
+      var colors = ['#bb0000', '#ffffff', '#00bb00', '#0000bb', '#ffdd00'];
+
+      (function frame() {
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: colors
+        });
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: colors
+        });
+
+        if (Date.now() < animationEnd) {
+          requestAnimationFrame(frame);
+        }
+      }());
     }
 
     // ============ RENDER ============
@@ -1103,7 +1351,7 @@
                 <button class="timer-btn secondary" onclick="resetTimer('${ex.id}', ${ex.duration})">
                   🔄 Сброс
                 </button>
-                <span class="timer-display ${timerSeconds === 0 && activeTimer !== ex.id ? '' : ''}" id="timer-${ex.id}">
+                <span class="timer-display" id="timer-${ex.id}">
                   ${formatTime(isTimerRunning ? timerSeconds : ex.duration)}
                 </span>
               </div>
@@ -1141,7 +1389,33 @@
       `;
     }
 
+    function renderStats() {
+        let totalCount = 0;
+        Object.values(completed).forEach(dayEx => {
+            totalCount += Object.values(dayEx).filter(Boolean).length;
+        });
+        stats.total = totalCount;
+        
+        document.getElementById('streakCount').innerText = stats.streak;
+        document.getElementById('totalDone').innerText = stats.total;
+    }
+
+    function renderAchievements() {
+        const row = document.getElementById('achievementsRow');
+        row.innerHTML = achievementsList.map(ach => {
+            const isUnlocked = stats.unlockedAch.includes(ach.id);
+            return `
+                <div class="achievement-badge ${isUnlocked ? 'unlocked' : ''}">
+                    ${ach.icon}
+                    <span class="achievement-tooltip">${ach.name}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
     function render() {
+      renderStats();
+      renderAchievements();
       renderTabs();
       renderDay();
     }
@@ -1149,8 +1423,24 @@
     // ============ ACTIONS ============
     function toggleExercise(dayId, exId) {
       if (!completed[dayId]) completed[dayId] = {};
-      completed[dayId][exId] = !completed[dayId][exId];
-      saveProgress();
+      
+      if (completed[dayId][exId]) {
+          completed[dayId][exId] = false;
+      } else {
+          completed[dayId][exId] = true;
+          updateStreak();
+          stats.total++;
+          checkAchievements();
+          
+          const day = weeklyData.find(d => d.id === dayId);
+          const allDone = day.exercises.every(ex => completed[dayId]?.[ex.id]);
+          
+          if (allDone) {
+            celebrate();
+          }
+      }
+      
+      saveState();
       render();
     }
 
@@ -1193,16 +1483,17 @@
         
         if (timerSeconds <= 0) {
           stopTimer();
-          // Auto-complete exercise
           const day = weeklyData.find(d => d.id === activeDay);
           const ex = day?.exercises.find(e => e.id === exId);
           if (ex && !completed[activeDay]?.[exId]) {
             if (!completed[activeDay]) completed[activeDay] = {};
             completed[activeDay][exId] = true;
-            saveProgress();
+            updateStreak();
+            stats.total++;
+            checkAchievements();
+            saveState();
             render();
           }
-          // Play sound or notification
           try {
             const audio = new AudioContext();
             const oscillator = audio.createOscillator();
@@ -1241,7 +1532,7 @@
     function resetDay() {
       if (confirm('Сбросить прогресс за этот день?')) {
         delete completed[activeDay];
-        saveProgress();
+        saveState();
         stopTimer();
         render();
       }
@@ -1260,6 +1551,7 @@
     }
 
     // ============ INIT ============
+    loadState();
     render();
   </script>
 </body>
